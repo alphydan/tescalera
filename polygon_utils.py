@@ -62,6 +62,21 @@ def plot_polygon_list(polygons, colors=None, alphas=None):
     ax.axis('equal')
     plt.show()
 
+
+# Plot polygon list
+def blue_plot(polygons):
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    for polygon  in polygons:
+        x, y = polygon.exterior.xy
+        ax.plot(x, y, color='blue', linewidth=0.5)
+
+    ax.axis('equal')
+    plt.show()
+
+
+
+
 # center bounding box around polygons
 def center_rectangle_on_polygons(polygons, rectangle):
     # Calculate the bounding box of all polygons
