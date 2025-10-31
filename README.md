@@ -26,8 +26,10 @@ The last example illustrates how pentagons leave star and rhombus holes in the p
 ### 5. Socolar Aperiodic Tilings
 
 ### 6. P2 Penrose Aperiodic Tilings (with kites and darts)
-    - Script created by [tangentstorm](http://tangentstorm.com/)
-Also used to create a room divider with a Penrose tiling:
+
+With a script created by [tangentstorm](http://tangentstorm.com/)
+
+which was used to create a room divider with a Penrose tiling:
 <img src="./img/celosia_penrose_kite_dart.jpg" width="50%">
 
 ### 7. Hat monotile aperiodic tiling (with a pattern)
