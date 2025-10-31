@@ -30,6 +30,8 @@ The last example illustrates how pentagons leave star and rhombus holes in the p
 With a script created by [tangentstorm](http://tangentstorm.com/)
 
 which was used to create a room divider with a Penrose tiling:
-<img src="./img/celosia_penrose_kite_dart.jpg" width="50%">
+<img src="./img/celosia_penrose_kite_dart.jpg" width="50%"> <br>
+Manufactured by Carlos & Alberto Corrales.  It generates these beautiful shadows:
+<br><img src="./img/celosia_penrose_kite_dart_shadows.jpg" width="40%">
 
 ### 7. Hat monotile aperiodic tiling (with a pattern)
