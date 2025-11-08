@@ -106,6 +106,17 @@ def is_polygon_inside_frame(polygon, rect):
     (rx1, ry1, rx2, ry2) = rect.bounds
     return rx1 <= x <= rx2 and ry1 <= y <= ry2
 
+def crosses_boundary(poly, rect):
+    """It returns True when both conditions are met:
+      * not rect.contains(poly) → The polygon is NOT fully inside the rectangle*
+      * not poly.intersection(rect).is_empty → The polygon DOES overlap with the rectangle*
+      So it returns True only when the polygon partially overlaps - meaning it crosses the boundary.*
+      It returns False when:
+      * The polygon is fully inside (first condition fails)
+      * The polygon is fully outside (second condition fails)
+    """
+    return not rect.contains(poly) and not poly.intersection(rect).is_empty
+
 
 def save_polygon_list_to_svg(polygon_list, filename='tramo1.2.svg', size=('1200mm', '300mm')):
     # Create a new SVG drawing with 1mm = 1 user unit scale
@@ -163,3 +174,58 @@ def save_polygon_list_to_svg(polygon_list, filename='tramo1.2.svg', size=('1200m
     # Save the drawing
     dwg.save()
 
+def export_polygons_to_svg(polygon_list, filename='tramo7.2.svg', size=('12000mm', '12000mm')):
+    # Create a new SVG drawing with 1mm = 1 user unit scale
+    dwg = svgwrite.Drawing(filename, size=size, profile='full', viewBox=f"0 0 {size[0].replace('mm','')} {size[1].replace('mm','')}")
+    
+    #---------------------------------------
+    # Find bounding box of all polygons
+    all_coords = []
+    for polygon in polygon_list:
+        all_coords.extend(polygon.exterior.coords)
+    min_x = min(x for x,y in all_coords)
+    max_x = max(x for x,y in all_coords)
+    min_y = min(y for x,y in all_coords)
+    max_y = max(y for x,y in all_coords)
+    
+    # Calculate center offset to move polygons to canvas center
+    poly_width = max_x - min_x
+    poly_height = max_y - min_y
+    canvas_width = float(size[0].replace('mm',''))
+    canvas_height = float(size[1].replace('mm',''))
+    
+    x_offset = (canvas_width - poly_width)/2 - min_x
+    y_offset = (canvas_height - poly_height)/2 # - min_y
+    
+    
+    # Create a group for all paths & add transform to center the group
+    group = dwg.g(fill='none', stroke='blue', 
+                  stroke_width=0.3, 
+                  transform=f'translate({x_offset},{y_offset})')
+
+    # Calculate the maximum y-coordinate to use for flipping
+    max_y = max(max(coord[1] for coord in polygon.exterior.coords) for polygon in polygon_list)
+    
+    # Iterate through the polygons in the list
+    for polygon in polygon_list:
+        # Extract coordinates from the Shapely polygon, flip the y-coordinate
+        coords = [(coord[0], max_y - coord[1]) for coord in polygon.exterior.coords]
+
+        # Create a path
+        path = dwg.path(d=f'M {coords[0][0]},{coords[0][1]}')
+
+        # Add line segments to the path
+        for coord in coords[1:]:
+            path.push(f'L {coord[0]},{coord[1]}')
+
+        # Close the path
+        path.push('Z')
+
+        # Add the path to the group
+        group.add(path)
+
+    # Add the group to the drawing
+    dwg.add(group)
+
+    # Save the drawing
+    dwg.save()
