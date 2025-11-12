@@ -22,6 +22,8 @@ from polygon_utils import (
     crosses_boundary,
 )
 
+from load_hole_polygons import get_hole_points
+
 # Build hat tiles in grid coordinates using integers
 # Rotate/translate using grid operations (integers)
 # Attach blocks by searching integer translations
@@ -235,24 +237,6 @@ def make_sixth_block(add_ear):
     #result=attach_block(result,translate_polygons_in_grid(rotate_polygons_in_grid(full_fourth_block,8),(204,564)),True)
     return result
 
-def write_svg(polygons,file_name):
-    with open(file_name,"w") as file:
-        file.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n")
-        file.write("<svg\n")
-        file.write("\tversion=\"1.1\"\n")
-        file.write("\txmlns=\"http://www.w3.org/2000/svg\"\n")
-        file.write("\txmlns:svg=\"http://www.w3.org/2000/svg\">\n")
-        for polygon in polygons:
-            file.write("\t<path fill=\"none\" stroke=\"black\" stroke-width=\"0.01\" d=\"\n")
-            file.write("\t\tM"+str(polygon[0][0])+" "+str(polygon[0][1])+" L\n")
-            for vertex in polygon[1:]:
-                file.write("\t\t"+str(vertex[0])+" "+str(vertex[1])+"\n")
-            file.write("\t\tZ\"/>\n")
-        file.write("</svg>")
-
-
-
-
 
 origin=[350.,350.]
 x=(0, 7) # scaling factor
@@ -260,13 +244,26 @@ y=rotate_60(x)
 start=time.time()
 
 # polygons=make_second_block(True)
-# polygons=make_third_block(True)
+polygons=make_third_block(True)
 # polygons=make_fourth_block(True)
-polygons=make_fifth_block(True)
+# polygons=make_fifth_block(True)
 # polygons=make_sixth_block(True)
 
 polygons_world_cs = convert_polygons_to_world_cs(polygons,origin,x,y)
-shapely_polygons = [Polygon(p) for p in polygons_world_cs]
+hat_polygons = [Polygon(p) for p in polygons_world_cs]
+hole_polygons = [Polygon(p) for p in get_hole_points()]
+
+print("translatin hole")
+
+for poly in hole_polygons:
+    if (poly.area < 400) and (len(poly.exterior.coords) > 10):
+        # it is the 1/4-circle hole
+        # we correct the position of the hole
+        circle_hole = affinity.translate(poly, -3.1470695, -1.4994994)
+        hole_polygons.remove(poly)
+
+hole_polygons.append(circle_hole)
+
 
 # Create Frame to select region of interest
 frame = shp_polys([[0,0],
@@ -276,13 +273,13 @@ frame = shp_polys([[0,0],
 
 # Keep only polygons inside selected frame
 # create frame
-centered_frame = center_rectangle_on_polygons(shapely_polygons, frame)
+centered_frame = center_rectangle_on_polygons(hat_polygons, frame)
 frame_shift_x = 660 # horizontal shift for frame adjustment
 frame_shift_y = 250  # vertical shift for frame adjustment
 centered_frame = affinity.translate(centered_frame, frame_shift_x, frame_shift_y)
 
 # keep only polygons inside selected frame
-filtered_shapely_polygons = [polygon for polygon in shapely_polygons if \
+filtered_hat_polygons = [polygon for polygon in hat_polygons if \
     is_polygon_inside_frame(polygon, centered_frame)]
 
 def add_tile(tile_width, tile_height, polygon_list, up_shift=0):
@@ -330,34 +327,34 @@ def add_inner_tile(outer_tile, endtile=False):
     
     return inner_tile
 
-tile_721 = add_tile(1130, 170, filtered_shapely_polygons)
+tile_721 = add_tile(1130, 170, filtered_hat_polygons)
 inner_tile_721 = add_inner_tile(tile_721)
 
-tile_722 = add_tile(803, 170, filtered_shapely_polygons, up_shift=tile_721.bounds[3] + 7)
+tile_722 = add_tile(803, 170, filtered_hat_polygons, up_shift=tile_721.bounds[3] + 7)
 inner_tile_722 = add_inner_tile(tile_722)
 
-tile_723 = add_tile(865, 170, filtered_shapely_polygons, up_shift=tile_722.bounds[3] + 7)
+tile_723 = add_tile(865, 170, filtered_hat_polygons, up_shift=tile_722.bounds[3] + 7)
 inner_tile_723 = add_inner_tile(tile_723)
 
-tile_724 = add_tile(1135, 170, filtered_shapely_polygons, up_shift=tile_723.bounds[3] + 7)
+tile_724 = add_tile(1135, 170, filtered_hat_polygons, up_shift=tile_723.bounds[3] + 7)
 inner_tile_724 = add_inner_tile(tile_724)
 
-tile_725 = add_tile(905, 170, filtered_shapely_polygons, up_shift=tile_724.bounds[3] + 7)
+tile_725 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_724.bounds[3] + 7)
 inner_tile_725 = add_inner_tile(tile_725)
 
-tile_726 = add_tile(905, 170, filtered_shapely_polygons, up_shift=tile_725.bounds[3] + 7)
+tile_726 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_725.bounds[3] + 7)
 inner_tile_726 = add_inner_tile(tile_726)
 
-tile_727 = add_tile(905, 170, filtered_shapely_polygons, up_shift=tile_726.bounds[3] + 7)
+tile_727 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_726.bounds[3] + 7)
 inner_tile_727 = add_inner_tile(tile_727)
 
-tile_728 = add_tile(905, 170, filtered_shapely_polygons, up_shift=tile_727.bounds[3] + 7)
+tile_728 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_727.bounds[3] + 7)
 inner_tile_728 = add_inner_tile(tile_728)
 
-tile_729 = add_tile(905, 190, filtered_shapely_polygons, up_shift=tile_728.bounds[3] + 7)
+tile_729 = add_tile(905, 190, filtered_hat_polygons, up_shift=tile_728.bounds[3] + 7)
 inner_tile_729 = add_inner_tile(tile_729, endtile=True)
 
-tiles_and_frames = filtered_shapely_polygons
+tiles_and_frames = filtered_hat_polygons
 tiles_and_frames.extend([tile_721] + [inner_tile_721])
 tiles_and_frames.extend([tile_722] + [inner_tile_722] + [tile_723] + [inner_tile_723])
 tiles_and_frames.extend([tile_724] + [inner_tile_724])
@@ -391,16 +388,14 @@ def crop_and_save_tile(polygons, tile, inner_tile, tile_name):
 
     export_polygons_to_svg(cropped_polygons + [tile] + [inner_tile], f"{str(script_dir)}/{tile_name}_tamo7.svg")
 
-crop_and_save_tile(filtered_shapely_polygons, tile_721, inner_tile_721, "721")
+crop_and_save_tile(filtered_hat_polygons, tile_721, inner_tile_721, "721")
 
 # Export and save to SVG
 # export_polygons_to_svg(cropped_polygons + [tile_721] + [inner_tile_721], f"{str(script_dir)}/tramo7.2.svg")
-print(type(shapely_polygons), type([centered_frame]))
-export_polygons_to_svg(filtered_shapely_polygons + [centered_frame], f"{str(script_dir)}/tramo7.2_frame.svg")
-write_svg(
-    polygons_world_cs,
-    f"{str(script_dir)}/qqq.svg"
-)
+print(type(hat_polygons), type([centered_frame]))
+
+export_polygons_to_svg(filtered_hat_polygons + [centered_frame], f"{str(script_dir)}/tramo7.2_frame.svg")
+export_polygons_to_svg(hat_polygons + hole_polygons, f"{str(script_dir)}/full_polygons.svg")
 
 print("polygon count: ",len(polygons))
 print("time:",time.time()-start)
