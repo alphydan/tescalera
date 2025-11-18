@@ -1,7 +1,8 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-from shapely.geometry import Polygon, box
+from shapely.geometry import Polygon, MultiPolygon, box, MultiPoint, Point
+from shapely import polygons as shp_polys
 from shapely import centroid, affinity
 
 import svgwrite
@@ -75,8 +76,25 @@ def blue_plot(polygons):
     plt.show()
 
 
+def center_frame(polygons, frame):
+    max_poly_y = max(polygons, key=lambda x: x.centroid.bounds[1])
+    max_poly_x = max(polygons, key=lambda x: x.centroid.bounds[0])
+    min_poly_y = min(polygons, key=lambda x: x.centroid.bounds[1])
+    min_poly_x = min(polygons, key=lambda x: x.centroid.bounds[0])
 
+    min_y = min_poly_y.centroid.bounds[1]
+    min_x = min_poly_x.centroid.bounds[0]
+    max_y = max_poly_y.centroid.bounds[1]
+    max_x = max_poly_x.centroid.bounds[0]
 
+    polygon_center = box(min_x, min_y, max_x, max_y).centroid
+    frame_center = frame.centroid
+    dx = polygon_center.x - frame_center.x
+    dy = polygon_center.y - frame_center.y
+    centered_frame = affinity.translate(frame, dx, dy)
+    
+    return centered_frame
+    
 # center bounding box around polygons
 def center_rectangle_on_polygons(polygons, rectangle):
     # Calculate the bounding box of all polygons
@@ -175,6 +193,7 @@ def save_polygon_list_to_svg(polygon_list, filename='tramo1.2.svg', size=('1200m
     dwg.save()
 
 def export_polygons_to_svg(polygon_list, filename='tramo7.2.svg', size=('12000mm', '12000mm')):
+
     # Create a new SVG drawing with 1mm = 1 user unit scale
     dwg = svgwrite.Drawing(filename, size=size, profile='full', viewBox=f"0 0 {size[0].replace('mm','')} {size[1].replace('mm','')}")
     
@@ -182,7 +201,8 @@ def export_polygons_to_svg(polygon_list, filename='tramo7.2.svg', size=('12000mm
     # Find bounding box of all polygons
     all_coords = []
     for polygon in polygon_list:
-        all_coords.extend(polygon.exterior.coords)
+        if isinstance(polygon, Polygon):
+            all_coords.extend(polygon.exterior.coords)
     min_x = min(x for x,y in all_coords)
     max_x = max(x for x,y in all_coords)
     min_y = min(y for x,y in all_coords)
@@ -204,28 +224,169 @@ def export_polygons_to_svg(polygon_list, filename='tramo7.2.svg', size=('12000mm
                   transform=f'translate({x_offset},{y_offset})')
 
     # Calculate the maximum y-coordinate to use for flipping
-    max_y = max(max(coord[1] for coord in polygon.exterior.coords) for polygon in polygon_list)
+    if isinstance(polygon, Polygon):
+        # calculate only for polygons, ignore MultiPolygon
+        max_y = max(max(coord[1] for coord in polygon.exterior.coords) \
+            for polygon in polygon_list \
+                if isinstance(polygon, Polygon))
     
     # Iterate through the polygons in the list
     for polygon in polygon_list:
-        # Extract coordinates from the Shapely polygon, flip the y-coordinate
-        coords = [(coord[0], max_y - coord[1]) for coord in polygon.exterior.coords]
+        if isinstance(polygon, Polygon):
+            # Extract coordinates from the Shapely polygon, flip the y-coordinate
+            coords = [(coord[0], max_y - coord[1]) for coord in polygon.exterior.coords]
 
-        # Create a path
-        path = dwg.path(d=f'M {coords[0][0]},{coords[0][1]}')
+            # Create a path
+            path = dwg.path(d=f'M {coords[0][0]},{coords[0][1]}')
 
-        # Add line segments to the path
-        for coord in coords[1:]:
-            path.push(f'L {coord[0]},{coord[1]}')
+            # Add line segments to the path
+            for coord in coords[1:]:
+                path.push(f'L {coord[0]},{coord[1]}')
+                path.push('Z')
+            group.add(path)
 
-        # Close the path
-        path.push('Z')
+        if isinstance(polygon, MultiPolygon):
+            for poly in polygon.geoms:
+                coords = [(coord[0], max_y - coord[1]) for coord in poly.exterior.coords]
 
-        # Add the path to the group
-        group.add(path)
+                # Create a path
+                path = dwg.path(d=f'M {coords[0][0]},{coords[0][1]}')
+
+                # Add line segments to the path
+                for coord in coords[1:]:
+                    path.push(f'L {coord[0]},{coord[1]}')
+                    path.push('Z')
+                group.add(path)
 
     # Add the group to the drawing
     dwg.add(group)
 
     # Save the drawing
     dwg.save()
+
+
+def simple_svg_save(polygon_list, filename='tramo7.2.svg', size=('1800mm', '2100mm'), label=True):
+    # Create a new SVG drawing with 1mm = 1 user unit scale
+    dwg = svgwrite.Drawing(filename, size=size, profile='full', viewBox=f"0 0 {size[0].replace('mm','')} {size[1].replace('mm','')}")
+    
+    # Create a group for all paths & add transform to center the group
+    hat_group = dwg.g(fill='none', stroke='blue', 
+                  stroke_width=0.1, 
+                  )
+    hole_group = dwg.g(fill='none', stroke='red', 
+                  stroke_width=0.5, 
+                  )
+    
+    for polygon in polygon_list:
+        if isinstance(polygon, Polygon):
+            coords = [(coord[0], - coord[1]) for coord in polygon.exterior.coords]
+            path = dwg.path(d=f'M {coords[0][0]},{coords[0][1]}')
+            for coord in coords[1:]:
+                path.push(f'L {coord[0]},{coord[1]}')
+            path.push('Z')
+            hat_group.add(path)
+            # Find the index of the polygon in the list
+            try:
+                idx = polygon_list.index(polygon)
+            except ValueError:
+                idx = None
+            if idx is not None and label==True:
+                # Compute the centroid
+                centroid_pt = polygon.centroid
+                # svgwrite uses (x, y) positions
+                hat_group.add(
+                    dwg.text(
+                        str(int(idx / 2)),
+                        insert=(centroid_pt.x, centroid_pt.y),
+                        text_anchor="middle",
+                        alignment_baseline="middle",
+                        font_size="14px",
+                        fill="black"
+                    )
+                )
+        if isinstance(polygon, MultiPolygon):
+            for poly in polygon.geoms:
+                coords = [(coord[0], -coord[1]) for coord in poly.exterior.coords]
+                path = dwg.path(d=f'M {coords[0][0]},{coords[0][1]}')
+                for coord in coords[1:]:
+                    path.push(f'L {coord[0]},{coord[1]}')
+                path.push('Z')
+                hole_group.add(path)
+    dwg.add(hat_group)
+    dwg.add(hole_group)
+    dwg.save()
+    
+    return dwg
+
+def add_tile(tile_width, tile_height, polygon_list, up_shift=0):
+    # create tile, center it on the polygons
+    tile = shp_polys([[0,0],
+                  [0 + tile_width, 0],
+                  [0 + tile_width, 0 + tile_height],
+                  [0, 0 + tile_height]])
+    
+    # calculate horizontal span /middle of polygons
+    left_most_polygon = min(polygon_list, key=lambda x: x.bounds[0])
+    right_most_polygon = max(polygon_list, key=lambda x: x.bounds[2])
+    
+    middle_of_polygons = (left_most_polygon.bounds[0] + right_most_polygon.bounds[2])/2
+    middle_of_tile = (tile.bounds[0] + tile.bounds[2])/2
+    shift_to_edge =  left_most_polygon.bounds[0] - tile.bounds[0] 
+    tile = affinity.translate(tile, shift_to_edge, up_shift)
+
+    middle_of_tile = (tile.bounds[0] + tile.bounds[2])/2
+    shift_to_middle = middle_of_polygons - middle_of_tile
+    tile = affinity.translate(tile, shift_to_middle, 0)
+    
+    return tile
+
+def add_inner_tile(outer_tile, endtile=False):
+    if endtile:
+        TILE_BOTTOM_MARGIN = 30
+        INNER_TILE_HEIGHT = 148
+    else:
+        TILE_BOTTOM_MARGIN = 26
+        INNER_TILE_HEIGHT = 122
+    
+    TILE_SIDE_MARGIN = 16
+    outer_tile_width = outer_tile.bounds[2] - outer_tile.bounds[0]
+    bottom_left_point = outer_tile.exterior.coords[0]
+
+    inner_tile = shp_polys([[bottom_left_point[0] + TILE_SIDE_MARGIN, 
+                            bottom_left_point[1] + TILE_BOTTOM_MARGIN],
+                              [bottom_left_point[0] + outer_tile_width - TILE_SIDE_MARGIN, 
+                              bottom_left_point[1] + TILE_BOTTOM_MARGIN],
+                              [bottom_left_point[0] + outer_tile_width - TILE_SIDE_MARGIN, 
+                              bottom_left_point[1] + INNER_TILE_HEIGHT + TILE_BOTTOM_MARGIN],
+                              [bottom_left_point[0] + TILE_SIDE_MARGIN, 
+                              bottom_left_point[1] + INNER_TILE_HEIGHT + TILE_BOTTOM_MARGIN]])
+    
+    return inner_tile
+
+def crop_and_save_tile(polygons, tile, inner_tile, tile_name, save_holes=True):
+    cropped_polygons = []
+    # keep only the holes
+    if save_holes:
+        # keep only holes
+        polygons = [poly for poly in polygons if poly.geom_type == 'MultiPolygon']
+    else:
+        # keep only lines
+        polygons = [poly for poly in polygons if poly.geom_type == 'Polygon']
+    for poly in polygons:
+        if crosses_boundary(poly, inner_tile):
+            result = poly.intersection(inner_tile)
+            if isinstance(result, MultiPolygon):
+                cropped_polygons.extend(result.geoms)
+            elif isinstance(result, MultiPoint):
+                cropped_polygons.append(poly)
+            elif isinstance(result, Point):
+                # if only one point in common and centroid outside of inner tile
+                if not inner_tile.contains(result.centroid):
+                    continue
+            else:
+                cropped_polygons.append(result)
+        elif inner_tile.contains(poly):
+            cropped_polygons.append(poly)
+        else:
+            continue
+    return cropped_polygons + [tile]

@@ -2,10 +2,10 @@
 import math
 import time
 
-import svgwrite
 from shapely.geometry import Polygon, MultiPolygon, MultiPoint, Point
-from shapely import affinity, centroid, polygons
+from shapely import affinity, polygons
 from shapely import polygons as shp_polys
+from shapely.geometry import JOIN_STYLE
 
 import sys
 from pathlib import Path
@@ -20,6 +20,7 @@ from polygon_utils import (
     is_polygon_inside_frame,
     export_polygons_to_svg,
     crosses_boundary,
+    simple_svg_save,
 )
 
 from load_hole_polygons import get_hole_points
@@ -225,6 +226,13 @@ def make_fifth_block(add_ear):
     result=attach_block(result,translate_polygons_in_grid(rotate_polygons_in_grid(full_fourth_block,8),(204,564)),False)
     return result
 
+def make_partial_fifth_block(add_ear):
+    full_fourth_block=make_fourth_block(True)
+    result=full_fourth_block
+    result=attach_block(result,translate_polygons_in_grid(make_fourth_block(False),(-78,282)),False)
+    # result=attach_block(result,translate_polygons_in_grid(rotate_polygons_in_grid(full_fourth_block,4),(-438,312)),False)
+    return result
+
 def make_sixth_block(add_ear):
     full_fifth_block=make_fifth_block(True)
     result=full_fifth_block
@@ -239,21 +247,23 @@ def make_sixth_block(add_ear):
 
 
 origin=[350.,350.]
-x=(0, 7) # scaling factor
+origin=[-100.,-1400.] # adhoc translation
+x=(0, 7.1) # scaling factor
 y=rotate_60(x)
 start=time.time()
 
 # polygons=make_second_block(True)
-polygons=make_third_block(True)
+# polygons=make_third_block(True)
 # polygons=make_fourth_block(True)
 # polygons=make_fifth_block(True)
+tessellation_polygons=make_partial_fifth_block(True)
 # polygons=make_sixth_block(True)
 
-polygons_world_cs = convert_polygons_to_world_cs(polygons,origin,x,y)
+polygons_world_cs = convert_polygons_to_world_cs(tessellation_polygons, origin, x, y)
 hat_polygons = [Polygon(p) for p in polygons_world_cs]
 hole_polygons = [Polygon(p) for p in get_hole_points()]
 
-print("translatin hole")
+print(" =>translating holes to origin (0,0)")
 
 for poly in hole_polygons:
     if (poly.area < 400) and (len(poly.exterior.coords) > 10):
@@ -263,24 +273,107 @@ for poly in hole_polygons:
         hole_polygons.remove(poly)
 
 hole_polygons.append(circle_hole)
+holes_group = MultiPolygon(hole_polygons)
+
+# send holes (as a MultiPolygon)to the origin
+x_to_origin, y_to_origin = (-holes_group.centroid.coords[0][0], -holes_group.centroid.coords[0][1])
+origin_holes = affinity.translate(holes_group, x_to_origin, y_to_origin) 
+
+
+def get_hat_orientation(hat_polygon, n1, n2):
+    # we create a vector between points 1 and n
+    # and calculate the arctangent to find the orientation
+    # of the hat.  This provides a value which uniquely
+    # identifies each hat in the collection of possibilities
+    h1 = hat_polygon.exterior.coords[n1]
+    hn = hat_polygon.exterior.coords[n2]
+    dx,dy = (hn[0]-h1[0], hn[1]-h1[1])
+    angle = round(math.atan2(dy,dx),4)
+    return angle
+
+# created in a jupyter solve.it notebook
+# by matching get_hat_orientation to the configurations 
+# cf. hat_configurations.svg for an illustration
+orientation_dict = {
+    -2.9515: (0, False),
+ 2.2845: (60, False),
+ 1.2373: (120, False),
+  0.1901: (180, False),
+ -0.8571: (240, False),
+ -1.9043: (300, False),
+ 0.1562: (0, True),
+ 0.8571: (60, True),
+ 1.2034: (60, True),
+ 2.2506: (120, True),
+ -2.9854: (180, True),
+ -1.9382: (240, True),
+ -0.891: (300, True)}
+
+
+def mirror_holes(origin_holes):
+    # assumes origin holes are a MultiPolygon
+    # creates a mirror image of the holes
+    mirror_group = []
+    for poly in origin_holes.geoms:
+        mirror_poly = []
+        for coor in poly.exterior.coords:
+            mirror_poly.append((-coor[0], coor[1]))
+        mirror_group.append(Polygon(mirror_poly))
+    return MultiPolygon(mirror_group)
 
 
 # Create Frame to select region of interest
 frame = shp_polys([[0,0],
-                  [0 + 1300, 0],
-                  [0 + 1300, 0 + 1900],
-                  [0, 0 + 1900]])
+                  [0 + 1400, 0],
+                  [0 + 1400, 0 + 2000],
+                  [0, 0 + 2000]])
 
 # Keep only polygons inside selected frame
 # create frame
 centered_frame = center_rectangle_on_polygons(hat_polygons, frame)
-frame_shift_x = 660 # horizontal shift for frame adjustment
-frame_shift_y = 250  # vertical shift for frame adjustment
-centered_frame = affinity.translate(centered_frame, frame_shift_x, frame_shift_y)
+
 
 # keep only polygons inside selected frame
 filtered_hat_polygons = [polygon for polygon in hat_polygons if \
     is_polygon_inside_frame(polygon, centered_frame)]
+
+
+def assemble_hats_and_holes(hat_polygons, origin_holes):
+    final_polygon_list = []
+    for k, hat_poly in enumerate(hat_polygons):
+        hat_orient = get_hat_orientation(hat_poly,0, 7)
+        hat_x, hat_y = hat_poly.centroid.xy
+        if hat_orient not in orientation_dict:
+            print(f"{k} --> {hat_orient} not in orientation_dict")
+            # this polygon has no valid orientation
+            # probably because the starting point is not the first point
+            final_polygon_list.append(hat_poly)
+            continue
+        transform = orientation_dict[hat_orient]
+
+        if transform[1]:
+            # it's a mirror tile
+            holes = mirror_holes(origin_holes)
+            rot_holes = affinity.rotate(holes, angle=transform[0], origin="centroid")
+        else:
+            holes = origin_holes
+            rot_holes = affinity.rotate(holes, angle=-transform[0], origin="centroid")
+        
+        tran_holes = affinity.translate(rot_holes, hat_x, hat_y)
+        final_polygon_list.append(tran_holes)
+        final_polygon_list.append(hat_poly)
+    return final_polygon_list
+
+## FINAL ASSEMBLY OF HATS AND HOLES
+# final_polygon_list = assemble_hats_and_holes(filtered_hat_polygons, origin_holes)
+
+    
+
+INSET_DISTANCE = 3.2   # X ratio gives gaps of about 2Xmm solid channels
+inset_polygon_list = []
+for poly in filtered_hat_polygons:
+    # mitre join style is used to keepsharp corners
+    inset_polygon_list.append(poly.buffer(-INSET_DISTANCE, join_style=JOIN_STYLE.mitre))    
 
 def add_tile(tile_width, tile_height, polygon_list, up_shift=0):
     # create tile, center it on the polygons
@@ -327,7 +420,7 @@ def add_inner_tile(outer_tile, endtile=False):
     
     return inner_tile
 
-tile_721 = add_tile(1130, 170, filtered_hat_polygons)
+tile_721 = add_tile(1130, 170, filtered_hat_polygons, up_shift=-2000)
 inner_tile_721 = add_inner_tile(tile_721)
 
 tile_722 = add_tile(803, 170, filtered_hat_polygons, up_shift=tile_721.bounds[3] + 7)
@@ -355,6 +448,7 @@ tile_729 = add_tile(905, 190, filtered_hat_polygons, up_shift=tile_728.bounds[3]
 inner_tile_729 = add_inner_tile(tile_729, endtile=True)
 
 tiles_and_frames = filtered_hat_polygons
+tiles_and_frames = []
 tiles_and_frames.extend([tile_721] + [inner_tile_721])
 tiles_and_frames.extend([tile_722] + [inner_tile_722] + [tile_723] + [inner_tile_723])
 tiles_and_frames.extend([tile_724] + [inner_tile_724])
@@ -366,8 +460,15 @@ tiles_and_frames.extend([tile_729] + [inner_tile_729])
 
 
 
-def crop_and_save_tile(polygons, tile, inner_tile, tile_name):
+def crop_and_save_tile(polygons, tile, inner_tile, tile_name, save_holes=True):
     cropped_polygons = []
+    # keep only the holes
+    if save_holes:
+        # keep only holes
+        polygons = [poly for poly in polygons if poly.geom_type == 'MultiPolygon']
+    else:
+        # keep only lines
+        polygons = [poly for poly in polygons if poly.geom_type == 'Polygon']
     for poly in polygons:
         if crosses_boundary(poly, inner_tile):
             result = poly.intersection(inner_tile)
@@ -385,18 +486,43 @@ def crop_and_save_tile(polygons, tile, inner_tile, tile_name):
             cropped_polygons.append(poly)
         else:
             continue
+    return cropped_polygons + [tile]
 
-    export_polygons_to_svg(cropped_polygons + [tile] + [inner_tile], f"{str(script_dir)}/{tile_name}_tamo7.svg")
+crop_hats_721 = crop_and_save_tile(inset_polygon_list, tile_721, inner_tile_721, "721_hats", save_holes=False)
+crop_hats_722 = crop_and_save_tile(inset_polygon_list, tile_722, inner_tile_722, "722_hats", save_holes=False)
+crop_hats_723 = crop_and_save_tile(inset_polygon_list, tile_723, inner_tile_723, "723_hats", save_holes=False)
+crop_hats_724 = crop_and_save_tile(inset_polygon_list, tile_724, inner_tile_724, "724_hats", save_holes=False)
+crop_hats_725 = crop_and_save_tile(inset_polygon_list, tile_725, inner_tile_725, "725_hats", save_holes=False)
+crop_hats_726 = crop_and_save_tile(inset_polygon_list, tile_726, inner_tile_726, "726_hats", save_holes=False)
+crop_hats_727 = crop_and_save_tile(inset_polygon_list, tile_727, inner_tile_727, "727_hats", save_holes=False)
+crop_hats_728 = crop_and_save_tile(inset_polygon_list, tile_728, inner_tile_728, "728_hats", save_holes=False)
+crop_hats_729 = crop_and_save_tile(inset_polygon_list, tile_729, inner_tile_729, "729_hats", save_holes=False)
 
-crop_and_save_tile(filtered_hat_polygons, tile_721, inner_tile_721, "721")
-
+final_export_list = crop_hats_721 + crop_hats_722 + crop_hats_723 + \
+    crop_hats_724 + crop_hats_725 + crop_hats_726 + crop_hats_727 + \
+        crop_hats_728 + crop_hats_729
 # Export and save to SVG
 # export_polygons_to_svg(cropped_polygons + [tile_721] + [inner_tile_721], f"{str(script_dir)}/tramo7.2.svg")
-print(type(hat_polygons), type([centered_frame]))
 
 export_polygons_to_svg(filtered_hat_polygons + [centered_frame], f"{str(script_dir)}/tramo7.2_frame.svg")
-export_polygons_to_svg(hat_polygons + hole_polygons, f"{str(script_dir)}/full_polygons.svg")
+# export_polygons_to_svg(final_polygon_list, f"{str(script_dir)}/full_polygons.svg")
+# simple_svg_save(final_polygon_list + tiles_and_frames,
+#                 f"{str(script_dir)}/full_polygons_test.svg", label=False)
 
-print("polygon count: ",len(polygons))
+simple_svg_save(inset_polygon_list + tiles_and_frames,
+                f"{str(script_dir)}/inset_polygons_test.svg", label=False)
+
+print("before cleanup: ",len(final_export_list))
+# Filter out small polygons - use list comprehension to avoid iteration bug
+# Also check that geometry has .area attribute (Polygon, MultiPolygon have it, but Point/LineString don't)
+final_export_list = [
+    p for p in final_export_list 
+    if hasattr(p, 'area') and p.area >= 16
+]
+print("after cleanup: ",len(final_export_list))
+
+simple_svg_save(final_export_list, f"{str(script_dir)}/final_export_list.svg", label=False)
+
+print("polygon count: ",len(tessellation_polygons))
 print("time:",time.time()-start)
 
