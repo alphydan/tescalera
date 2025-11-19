@@ -224,7 +224,7 @@ def kite(p, h, s):
 
 
 # scale factor for tiles
-SCALE_FACTOR = 850  
+SCALE_FACTOR = 600  
 # five kites coming together at a point make a "sun", five kites a "star"
 SUN = set([kite(Vec2.ZERO, h=72 * i, s=SCALE_FACTOR) for i in range(5)])
 STAR = set([dart(Vec2.ZERO, h=72 * i, s=SCALE_FACTOR) for i in range(5)])

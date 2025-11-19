@@ -12,7 +12,7 @@ from shapely import affinity
 
 # Add the project root directory to Python path
 script_dir = Path(__file__).parent.resolve()
-project_root = script_dir.parent.parent
+project_root = script_dir.parent
 sys.path.insert(0, str(project_root))
 
 from polygon_utils import (
@@ -89,7 +89,7 @@ inner_tile_717 = add_inner_tile(tile_717)
 tile_718 = add_tile(905, 170, filtered_polygons, up_shift=tile_717.bounds[3] + 7)
 inner_tile_718 = add_inner_tile(tile_718)
 
-tile_719 = add_tile(905, 208, filtered_polygons, up_shift=tile_718.bounds[3] + 7)
+tile_719 = add_tile(905, 204, filtered_polygons, up_shift=tile_718.bounds[3] + 7)
 inner_tile_719 = add_inner_tile(tile_719, endtile=True)
 
 final_polygon_list = inset_polygon_list + [tile_711] + [inner_tile_711] + \
@@ -112,13 +112,13 @@ crop_717 = crop_and_save_tile(filtered_polygons, tile_717, inner_tile_717, "717"
 crop_718 = crop_and_save_tile(filtered_polygons, tile_718, inner_tile_718, "718", save_holes=False)
 crop_719 = crop_and_save_tile(filtered_polygons, tile_719, inner_tile_719, "719", save_holes=False)
 
-final_export_list = crop_711 + crop_712 + crop_713 + crop_714 + crop_715 + crop_716 + crop_717 + crop_718 + crop_719 + \
-    [centered_frame]
+final_export_list = crop_711 + crop_712 + crop_713 + crop_714 + \
+    crop_715 + crop_716 + crop_717 + crop_718 + crop_719
 
 # remove holes that are too small
 final_export_list = [
     p for p in final_export_list 
-    if hasattr(p, 'area') and p.area >= 16
+    if hasattr(p, 'area') and p.area >= 21
 ]
 simple_svg_save(final_export_list, f"{str(script_dir)}/penrose_tiles_cropped.svg", label=False)
 

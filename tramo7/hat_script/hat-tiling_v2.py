@@ -399,8 +399,8 @@ def add_tile(tile_width, tile_height, polygon_list, up_shift=0):
 
 def add_inner_tile(outer_tile, endtile=False):
     if endtile:
-        TILE_BOTTOM_MARGIN = 10
-        INNER_TILE_HEIGHT = 170
+        TILE_BOTTOM_MARGIN = 15
+        INNER_TILE_HEIGHT = 160
     else:
         TILE_BOTTOM_MARGIN = 26
         INNER_TILE_HEIGHT = 120
@@ -517,11 +517,12 @@ print("before cleanup: ",len(final_export_list))
 # Also check that geometry has .area attribute (Polygon, MultiPolygon have it, but Point/LineString don't)
 final_export_list = [
     p for p in final_export_list 
-    if hasattr(p, 'area') and p.area >= 16
+    if hasattr(p, 'area') and p.area >= 30
 ]
+print(max(crop_hats_721, key=lambda x: x.area).area)
 print("after cleanup: ",len(final_export_list))
 
-simple_svg_save(final_export_list, f"{str(script_dir)}/final_export_list.svg", label=False)
+simple_svg_save(final_export_list, f"{str(script_dir)}/final_export_list_hat_only.svg", label=False)
 
 print("polygon count: ",len(tessellation_polygons))
 print("time:",time.time()-start)
