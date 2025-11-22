@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   sodipodi:docname="socolar.svg"
+   sodipodi:docname="tramo_5_socolar.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,15 +23,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.35901375"
-     inkscape:cx="4469.1882"
-     inkscape:cy="2167.0479"
+     inkscape:zoom="0.17950688"
+     inkscape:cx="2050.0608"
+     inkscape:cy="7765.7193"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer3" />
+     inkscape:current-layer="g5069" />
   <defs
      id="defs1">
     <clipPath
@@ -29020,8 +29020,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(896.55661,975.76657)"
-     sodipodi:insensitive="true">
+     transform="translate(896.55661,975.76657)">
     <g
        id="g5069"
        transform="matrix(1.0322979,0,0,-1.0322979,-446.09803,-332.12451)">
