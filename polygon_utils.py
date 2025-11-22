@@ -47,9 +47,30 @@ def plot_polygon_dict(polygons, colors=None, alphas=None):
 
     ax.axis('equal')
 
+# Polygon normalization helpers
+def _ensure_iterable(polygons):
+    if isinstance(polygons, Polygon):
+        return [polygons]
+    if isinstance(polygons, MultiPolygon):
+        return list(polygons.geoms)
+    return list(polygons)
+
+
+def _flatten_polygons(polygons):
+    flat_polygons = []
+    for polygon in polygons:
+        if isinstance(polygon, MultiPolygon):
+            flat_polygons.extend(list(polygon.geoms))
+        else:
+            flat_polygons.append(polygon)
+    return flat_polygons
+
+
 # Plot polygon list
 def plot_polygon_list(polygons, colors=None, alphas=None):
     fig, ax = plt.subplots(figsize=(5, 5))
+
+    polygons = _flatten_polygons(_ensure_iterable(polygons))
 
     if colors is None:
         colors = plt.cm.rainbow(np.linspace(0, 1, len(polygons)))
@@ -67,16 +88,19 @@ def plot_polygon_list(polygons, colors=None, alphas=None):
 # Plot polygon list
 def blue_plot(polygons):
     fig, ax = plt.subplots(figsize=(10, 5))
-
-    for polygon  in polygons:
-        x, y = polygon.exterior.xy
-        ax.plot(x, y, color='blue', linewidth=0.5)
+    color = "blue"
+    all_polys = _flatten_polygons(_ensure_iterable(polygons))
+    for poly in all_polys:
+        x, y = poly.exterior.xy
+        ax.plot(x, y, color=color, linewidth=0.5)
 
     ax.axis('equal')
     plt.show()
 
 
 def center_frame(polygons, frame):
+    polygons = _flatten_polygons(_ensure_iterable(polygons))
+
     max_poly_y = max(polygons, key=lambda x: x.centroid.bounds[1])
     max_poly_x = max(polygons, key=lambda x: x.centroid.bounds[0])
     min_poly_y = min(polygons, key=lambda x: x.centroid.bounds[1])
@@ -140,6 +164,8 @@ def save_polygon_list_to_svg(polygon_list, filename='tramo1.2.svg', size=('1200m
     # Create a new SVG drawing with 1mm = 1 user unit scale
     dwg = svgwrite.Drawing(filename, size=size, profile='full', viewBox=f"0 0 {size[0].replace('mm','')} {size[1].replace('mm','')}")
     
+    polygon_list = _flatten_polygons(_ensure_iterable(polygon_list))
+
     #---------------------------------------
     # Find bounding box of all polygons
     all_coords = []
@@ -318,26 +344,26 @@ def simple_svg_save(polygon_list, filename='tramo7.2.svg', size=('1800mm', '2100
     
     return dwg
 
-def add_tile(tile_width, tile_height, polygon_list, up_shift=0):
+def add_tile(tile_width, tile_height, polygon_list, center_tile=False,up_shift=0):
     # create tile, center it on the polygons
-    tile = shp_polys([[0,0],
-                  [0 + tile_width, 0],
-                  [0 + tile_width, 0 + tile_height],
-                  [0, 0 + tile_height]])
+    tile = shp_polys([[0,0], [tile_width, 0],
+                  [tile_width, tile_height], [0, tile_height]]) 
     
-    # calculate horizontal span /middle of polygons
-    left_most_polygon = min(polygon_list, key=lambda x: x.bounds[0])
-    right_most_polygon = max(polygon_list, key=lambda x: x.bounds[2])
-    
-    middle_of_polygons = (left_most_polygon.bounds[0] + right_most_polygon.bounds[2])/2
-    middle_of_tile = (tile.bounds[0] + tile.bounds[2])/2
-    shift_to_edge =  left_most_polygon.bounds[0] - tile.bounds[0] 
-    tile = affinity.translate(tile, shift_to_edge, up_shift)
-
-    middle_of_tile = (tile.bounds[0] + tile.bounds[2])/2
-    shift_to_middle = middle_of_polygons - middle_of_tile
-    tile = affinity.translate(tile, shift_to_middle, 0)
-    
+    if center_tile:
+        # calculate horizontal span /middle of polygons
+        left_most_polygon = min(polygon_list, key=lambda x: x.bounds[0])
+        right_most_polygon = max(polygon_list, key=lambda x: x.bounds[2])
+        
+        middle_of_polygons = (left_most_polygon.bounds[0] + right_most_polygon.bounds[2])/2
+        middle_of_tile = (tile.bounds[0] + tile.bounds[2])/2
+        shift_to_edge =  left_most_polygon.bounds[0] - tile.bounds[0] 
+        tile = affinity.translate(tile, shift_to_edge, up_shift)
+        
+        middle_of_tile = (tile.bounds[0] + tile.bounds[2])/2
+        shift_to_middle = middle_of_polygons - middle_of_tile
+        print(shift_to_edge,shift_to_middle)
+        tile = affinity.translate(tile, shift_to_middle, 0)
+        
     return tile
 
 def add_inner_tile(outer_tile, endtile=False):
@@ -363,15 +389,18 @@ def add_inner_tile(outer_tile, endtile=False):
     
     return inner_tile
 
-def crop_and_save_tile(polygons, tile, inner_tile, tile_name, save_holes=True):
+def crop_and_save_tile(polygons, inner_tile, save_holes=True):
     cropped_polygons = []
+    
     # keep only the holes
     if save_holes:
         # keep only holes
         polygons = [poly for poly in polygons if poly.geom_type == 'MultiPolygon']
     else:
-        # keep only lines
-        polygons = [poly for poly in polygons if poly.geom_type == 'Polygon']
+        # keep all (multi and single) polygons
+        polygons = _flatten_polygons(_ensure_iterable(polygons))
+    
+    print(len(polygons))
     for poly in polygons:
         if crosses_boundary(poly, inner_tile):
             result = poly.intersection(inner_tile)
@@ -389,4 +418,4 @@ def crop_and_save_tile(polygons, tile, inner_tile, tile_name, save_holes=True):
             cropped_polygons.append(poly)
         else:
             continue
-    return cropped_polygons + [tile]
+    return cropped_polygons
