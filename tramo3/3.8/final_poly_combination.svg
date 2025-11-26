@@ -22,7 +22,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.13010458"
-     inkscape:cx="1913.845"
+     inkscape:cx="1910.0019"
      inkscape:cy="476.53972"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
@@ -47,23 +47,24 @@
          style="vector-effect:non-scaling-stroke;stroke-width:0.26458333;stroke-dasharray:none;-inkscape-stroke:hairline" />
       <g
          id="g1"
-         transform="translate(-38.46121,-170.76298)">
+         transform="translate(-38.46121,-170.76298)"
+         style="vector-effect:non-scaling-stroke;-inkscape-stroke:hairline;stroke-width:0.26458333;stroke-dasharray:none">
         <path
            d="M 490.96121,238.47708 508.71473,269.22708 H 490.96121 L 482.08445,253.85208 Z"
            id="path11-4"
-           style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
+           style="vector-effect:non-scaling-stroke;stroke-width:0.26458333;stroke-dasharray:none;-inkscape-stroke:hairline" />
         <path
            d="M 522.46825,293.04888 H 486.96121 L 495.83797,277.67388 H 513.59149 Z"
            id="path12-8"
-           style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
+           style="vector-effect:non-scaling-stroke;stroke-width:0.26458333;stroke-dasharray:none;-inkscape-stroke:hairline" />
         <path
            d="M 479.74391,266.69174 477.20769,262.29888 459.45417,293.04888 H 464.52661 Z"
            id="path13-4"
-           style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
+           style="vector-effect:non-scaling-stroke;stroke-width:0.26458333;stroke-dasharray:none;-inkscape-stroke:hairline" />
         <path
            d="M 471.28985,293.04888 H 477.20769 L 486.08445,277.67388 483.12553,272.54888 Z"
            id="path14-9"
-           style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
+           style="vector-effect:non-scaling-stroke;stroke-width:0.26458333;stroke-dasharray:none;-inkscape-stroke:hairline" />
       </g>
     </g>
   </g>
