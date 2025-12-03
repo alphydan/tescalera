@@ -7,7 +7,7 @@
    viewBox="0 0 1202.9857 381.20468"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.2 (2aeb623e1d, 2025-05-12)"
+   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
    sodipodi:docname="step_1.1.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.13039513"
-     inkscape:cx="1533.7996"
-     inkscape:cy="-61.351983"
+     inkscape:zoom="0.73762624"
+     inkscape:cx="3566.1692"
+     inkscape:cy="62.362206"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
@@ -60,8 +60,8 @@
      transform="translate(1.4150005,1.4150005)">
     <path
        id="rect1"
-       style="opacity:0.99434;vector-effect:non-scaling-stroke;fill:none;stroke:#0000ff;stroke-width:0.265256;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
-       d="M 149.85284,123.73634 H 1054.8528 V 297.73655 H 149.85284 Z" />
+       style="opacity:0.99434;vector-effect:non-scaling-stroke;fill:none;stroke:#0000ff;stroke-width:0.265695;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
+       d="M 149.85284,123.73634 H 1057.8528 V 297.73634 H 149.85284 Z" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Stop);marker-end:url(#Stop)"
        d="M 126.04019,123.73634 V 296.77813"
@@ -79,7 +79,7 @@
          y="218.61168">175mm</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Stop);marker-end:url(#Stop)"
-       d="M 149.85284,110.50709 H 1055.9614"
+       d="M 149.85284,110.50709 H 1057.7549"
        id="path2"
        sodipodi:nodetypes="cc" />
     <text
@@ -92,7 +92,7 @@
          id="tspan2"
          style="stroke-width:0.264583"
          x="560.52417"
-         y="98.811623">905mm</tspan></text>
+         y="98.811623">908mm</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:25.4px;line-height:1.25;font-family:'Noto Mono';-inkscape-font-specification:'Noto Mono';word-spacing:0px;stroke-width:0.264583"

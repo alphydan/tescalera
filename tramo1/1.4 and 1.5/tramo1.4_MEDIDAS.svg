@@ -21,9 +21,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.18642101"
-     inkscape:cx="2167.1377"
-     inkscape:cy="1180.1245"
+     inkscape:zoom="1.4913681"
+     inkscape:cx="800.94245"
+     inkscape:cy="778.47985"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
@@ -49,6 +49,24 @@
          style="fill:none;stroke:context-stroke;stroke-width:1"
          d="M 0,4 V -4"
          id="path203" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Stop-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Stop"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1"
+         d="M 0,4 V -4"
+         id="path203-6" />
     </marker>
   </defs>
   <path
@@ -96,7 +114,7 @@
        y="159.19633">120</tspan></text>
   <path
      style="fill:none;stroke:#000000;stroke-width:1.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Stop);marker-end:url(#Stop)"
-     d="M 1052.0164,253.59593 H 147.51523"
+     d="M 1053.5796,253.59593 H 145.88438"
      id="path205"
      sodipodi:nodetypes="cc" />
   <text
@@ -109,7 +127,7 @@
        id="tspan205"
        style="stroke-width:0.264583"
        x="577.0257"
-       y="281.50305">906</tspan></text>
+       y="281.50305">908</tspan></text>
   <g
      fill="none"
      stroke="#0000ff"
@@ -118,27 +136,27 @@
      id="g115"
      style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline">
     <path
-       d="M 283.3331,121 270.5,133.8331 V 108.1669 Z"
+       d="M 283.3331,121 266,138.3331 V 103.6669 Z"
        id="path1"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 283.3331,73 270.5,85.833095 V 60.166905 Z"
+       d="M 283.3331,73 266,90.333095 V 55.666905 Z"
        id="path2"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 283.3331,25 270.5,37.833095 V 24 H 282.3331 Z"
+       d="M 283.3331,25 266,42.333095 V 24 H 282.3331 Z"
        id="path3"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 306.3331,144 H 270.5 V 143.1669 L 288,125.6669 Z"
+       d="M 306.3331,144 H 269.6669 L 288,125.6669 Z"
        id="path4"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 307.3331,97 288,116.3331 270.5,98.833095 V 95.166905 L 288,77.666905 Z"
+       d="M 288,77.666905 307.3331,97 288,116.3331 268.6669,97 Z"
        id="path5"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 307.3331,49 288,68.333095 270.5,50.833095 V 47.166905 L 288,29.666905 Z"
+       d="M 288,29.666905 307.3331,49 288,68.333095 268.6669,49 Z"
        id="path6"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
@@ -550,32 +568,64 @@
        id="path108"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 1145.5,119.1669 V 122.8331 L 1128,140.3331 1108.6669,121 1128,101.6669 Z"
+       d="M 1128,101.6669 1147.3331,121 1128,140.3331 1108.6669,121 Z"
        id="path109"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 1145.5,71.166905 V 74.833095 L 1128,92.333095 1108.6669,73 1128,53.666905 Z"
+       d="M 1128,53.666905 1147.3331,73 1128,92.333095 1108.6669,73 Z"
        id="path110"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 1128,44.333095 1108.6669,25 1109.6669,24 H 1145.5 V 26.833095 Z"
+       d="M 1147.3331,25 1128,44.333095 1108.6669,25 1109.6669,24 H 1146.3331 Z"
        id="path111"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 1145.5,132.1669 V 144 H 1133.6669 Z"
+       d="M 1150,127.6669 V 144 H 1133.6669 Z"
        id="path112"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 1132.6669,97 1145.5,84.166905 V 109.8331 Z"
+       d="M 1132.6669,97 1150,79.666905 V 114.3331 Z"
        id="path113"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 1132.6669,49 1145.5,36.166905 V 61.833095 Z"
+       d="M 1132.6669,49 1150,31.666905 V 66.333095 Z"
        id="path114"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
     <path
-       d="M 255.5,170 H 1160.5 V 0 H 255.5 Z"
+       d="M 254,170 H 1162 V 0 H 254 Z"
        id="path115"
        style="vector-effect:non-scaling-stroke;stroke-width:0.264583;stroke-dasharray:none;-inkscape-stroke:hairline" />
   </g>
+  <text
+     xml:space="preserve"
+     style="font-size:13.2731px;line-height:1.25;font-family:'Noto Mono';-inkscape-font-specification:'Noto Mono';word-spacing:0px;stroke-width:0.138261"
+     x="144.51587"
+     y="39.945091"
+     id="text203-5"><tspan
+       sodipodi:role="line"
+       id="tspan203-3"
+       style="stroke-width:0.138261"
+       x="144.51587"
+       y="39.945091">12</tspan></text>
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1.165;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Stop-5);marker-end:url(#Stop-5)"
+     d="M 146.69599,52.11351 158.69599,52.11423"
+     id="path194"
+     sodipodi:nodetypes="cc" />
+  <text
+     xml:space="preserve"
+     style="font-size:13.2731px;line-height:1.25;font-family:'Noto Mono';-inkscape-font-specification:'Noto Mono';word-spacing:0px;stroke-width:0.138261"
+     x="152.64923"
+     y="227.48499"
+     id="text194"><tspan
+       sodipodi:role="line"
+       id="tspan194"
+       style="stroke-width:0.138261"
+       x="152.64923"
+       y="227.48499">26</tspan></text>
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1.165;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Stop-5);marker-end:url(#Stop-5)"
+     d="M 140.17985,209.76777 140.17913,235"
+     id="path195"
+     sodipodi:nodetypes="cc" />
 </svg>
