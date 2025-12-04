@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.17950687"
-     inkscape:cx="1632.2495"
-     inkscape:cy="791.05607"
+     inkscape:zoom="2.0308884"
+     inkscape:cx="3489.6058"
+     inkscape:cy="998.57777"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
@@ -125,24 +125,26 @@
          y="15.633553">Tabica 4.9</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1.65822;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Stop);marker-end:url(#marker3)"
-       d="M 27.541571,218.83686 V 33.593847"
-       id="path2" />
+       d="M 27.541571,216.62594 V 33.593847"
+       id="path2"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
-       style="font-size:25.4px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;text-align:center;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
-       x="-123.60976"
-       y="21.288155"
+       style="font-size:25.2634px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;text-align:center;word-spacing:0px;text-anchor:middle;stroke-width:0.26316"
+       x="-122.94495"
+       y="21.204924"
        id="text3"
-       transform="rotate(-90)"><tspan
+       transform="matrix(0,-1.0054073,0.99462176,0,0,0)"><tspan
          sodipodi:role="line"
          id="tspan3"
-         style="stroke-width:0.264583"
-         x="-123.60976"
-         y="21.288155">187</tspan></text>
+         style="stroke-width:0.26316"
+         x="-122.94495"
+         y="21.204924">184</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker5);marker-end:url(#marker7)"
-       d="M 38.393521,232.03897 H 943.39347"
-       id="path4" />
+       d="M 38.393521,232.03897 H 946.34136"
+       id="path4"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:25.4px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;text-align:center;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
@@ -153,7 +155,7 @@
          id="tspan7"
          style="stroke-width:0.264583"
          x="490.89346"
-         y="253.20529">905</tspan></text>
+         y="253.20529">908</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:25.4px;line-height:1.25;font-family:FontAwesome;-inkscape-font-specification:FontAwesome;text-align:center;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
@@ -166,16 +168,16 @@
          x="474.47693"
          y="136.04491">RASTER 885 x 167mm</tspan></text>
     <rect
-       style="display:inline;opacity:0.99434;vector-effect:non-scaling-stroke;fill:none;fill-opacity:0.294118;stroke:#0000ff;stroke-width:0.28082;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
+       style="display:inline;opacity:0.99434;vector-effect:non-scaling-stroke;fill:none;fill-opacity:0.294118;stroke:#0000ff;stroke-width:0.279019;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
        id="rect68"
-       width="905"
-       height="187"
+       width="908"
+       height="184"
        x="38.393478"
        y="32.868061" />
     <path
        id="path76-0"
-       style="display:inline;opacity:0.99434;vector-effect:non-scaling-stroke;fill:#00e800;fill-opacity:0.11788693;stroke:#0000ff;stroke-width:0.28082;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
-       d="M 48.393434,209.86821 C 343.39343,209.86821 638.39352,209.86821 933.3935,209.86821 933.3935,154.20171 933.3935,98.535015 933.3935,42.868315 638.39352,42.868315 343.39343,42.868315 48.393434,42.868315 48.393434,98.535015 48.393434,154.20171 48.393434,209.86821 Z"
+       style="display:inline;opacity:0.99434;vector-effect:non-scaling-stroke;fill:#00e800;fill-opacity:0.117887;stroke:#0000ff;stroke-width:0.28082;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
+       d="M 48.393434,206.1571 C 343.39343,206.1571 638.39352,206.1571 933.3935,206.1571 933.3935,150.4906 933.3935,94.823895 933.3935,39.157195 638.39352,39.157195 343.39343,39.157195 48.393434,39.157195 48.393434,94.823895 48.393434,150.4906 48.393434,206.1571 Z"
        inkscape:export-filename="tabica59.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
