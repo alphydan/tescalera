@@ -31,7 +31,7 @@ polygons = [Polygon(tile) for tile in all_tiles]
 # scale all the polygons by 1000
 polygons = [affinity.scale(poly, xfact=3000, yfact=3000, origin=(0,0)) for poly in polygons]
 # translate polygons to center of page:
-polygons = [affinity.translate(poly, xoff=-600, yoff=-3200) for poly in polygons]
+polygons = [affinity.translate(poly, xoff=-600, yoff=-3200 + 200) for poly in polygons]
 
 # Create Frame to select region of interest
 frame = Polygon([[0,0],
@@ -57,31 +57,31 @@ filtered_polygons = inset_polygon_list
 
 print(centered_frame.bounds)
 
-tile_511 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=centered_frame.bounds[1] + 5)
+tile_511 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=centered_frame.bounds[1] + 5)
 inner_tile_511 = add_inner_tile(tile_511)
 
-tile_512 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_511.bounds[3] + 7)
+tile_512 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_511.bounds[3] + 7)
 inner_tile_512 = add_inner_tile(tile_512)
 
-tile_513 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_512.bounds[3] + 7)
+tile_513 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_512.bounds[3] + 7)
 inner_tile_513 = add_inner_tile(tile_513)
 
-tile_514 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_513.bounds[3] + 7)
+tile_514 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_513.bounds[3] + 7)
 inner_tile_514 = add_inner_tile(tile_514)
 
-tile_515 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_514.bounds[3] + 7)
+tile_515 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_514.bounds[3] + 7)
 inner_tile_515 = add_inner_tile(tile_515)
 
-tile_516 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_515.bounds[3] + 7)
+tile_516 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_515.bounds[3] + 7)
 inner_tile_516 = add_inner_tile(tile_516)
 
-tile_517 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_516.bounds[3] + 7)
+tile_517 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_516.bounds[3] + 7)
 inner_tile_517 = add_inner_tile(tile_517)
 
-tile_518 = add_tile(908, 165, filtered_polygons, center_tile=True, up_shift=tile_517.bounds[3] + 7)
+tile_518 = add_tile(908, 168, filtered_polygons, center_tile=True, up_shift=tile_517.bounds[3] + 7)
 inner_tile_518 = add_inner_tile(tile_518)
 
-tile_519 = add_tile(908, 184, filtered_polygons, center_tile=True, up_shift=tile_518.bounds[3] + 7)
+tile_519 = add_tile(908, 184, filtered_polygons, center_tile=True, up_shift=tile_518.bounds[3] + 0)
 inner_tile_519 = add_inner_tile(tile_519, endtile=True)
 
 final_polygon_list = inset_polygon_list + \
@@ -116,6 +116,49 @@ final_export_list = [
     p for p in final_export_list 
     if hasattr(p, 'area') and p.area >= 21
 ]
+
+
+# Remove smallest polygon in case of overlapping small polygons (excluding tiles or frame)
+
+from shapely.geometry import Polygon
+
+def is_tile_or_frame(polygon, tile_list):
+    # Assume tiles and frames in tile_list 
+    # Compare with 'is' semantic, as these are the exact same objects
+    return any(polygon is t for t in tile_list)
+
+# Collect all tiles and frame (excluding crops)
+tiles_and_frame = [centered_frame, tile_511, tile_512, tile_513, tile_514, tile_515, tile_516, tile_517, tile_518, tile_519]
+
+# Filter only polygons that are not tiles or frame and are polygons
+small_polygons = [
+    (i, p) for i, p in enumerate(final_export_list)
+    if isinstance(p, Polygon) and not is_tile_or_frame(p, tiles_and_frame)
+]
+
+# To keep track of indices to remove
+to_remove = set()
+
+# Check each pair for overlap, if they overlap, remove the one with smaller area
+for idx_a, poly_a in small_polygons:
+    for idx_b, poly_b in small_polygons:
+        if idx_a >= idx_b:
+            continue  # Only check each unique pair once
+        if poly_a.intersects(poly_b) and poly_a != poly_b:
+            intersection = poly_a.intersection(poly_b)
+            if intersection.area > 0.001:  # Any real overlap
+                # Remove the smaller
+                if poly_a.area <= poly_b.area:
+                    to_remove.add(idx_a)
+                else:
+                    to_remove.add(idx_b)
+
+# Remove the flagged polygons (by index)
+final_export_list = [
+    p for i, p in enumerate(final_export_list)
+    if i not in to_remove
+]
+
 
 simple_svg_save(final_export_list, f"{str(script_dir)}/p1_section5_tiles_cropped.svg", label=False)
 

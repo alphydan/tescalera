@@ -297,7 +297,7 @@ def simple_svg_save(polygon_list, filename='tramo7.2.svg', size=('1800mm', '2100
     
     # Create a group for all paths & add transform to center the group
     hat_group = dwg.g(fill='none', stroke='blue', 
-                  stroke_width=0.1, 
+                  stroke_width=0.5, 
                   )
     hole_group = dwg.g(fill='none', stroke='red', 
                   stroke_width=0.5, 
@@ -368,8 +368,8 @@ def add_tile(tile_width, tile_height, polygon_list, center_tile=False,up_shift=0
 
 def add_inner_tile(outer_tile, endtile=False):
     if endtile:
-        TILE_BOTTOM_MARGIN = 30
-        INNER_TILE_HEIGHT = 148
+        TILE_BOTTOM_MARGIN = 20
+        INNER_TILE_HEIGHT = 150
     else:
         TILE_BOTTOM_MARGIN = 26
         INNER_TILE_HEIGHT = 122

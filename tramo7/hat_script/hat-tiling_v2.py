@@ -420,31 +420,33 @@ def add_inner_tile(outer_tile, endtile=False):
     
     return inner_tile
 
+INTERTILE_GAP = 5   # 5
+
 tile_721 = add_tile(1130, 170, filtered_hat_polygons, up_shift=-2000)
 inner_tile_721 = add_inner_tile(tile_721)
 
-tile_722 = add_tile(803, 170, filtered_hat_polygons, up_shift=tile_721.bounds[3] + 7)
+tile_722 = add_tile(804, 170, filtered_hat_polygons, up_shift=tile_721.bounds[3] + INTERTILE_GAP)
 inner_tile_722 = add_inner_tile(tile_722)
 
-tile_723 = add_tile(865, 170, filtered_hat_polygons, up_shift=tile_722.bounds[3] + 7)
+tile_723 = add_tile(865, 170, filtered_hat_polygons, up_shift=tile_722.bounds[3] + INTERTILE_GAP)
 inner_tile_723 = add_inner_tile(tile_723)
 
-tile_724 = add_tile(1135, 170, filtered_hat_polygons, up_shift=tile_723.bounds[3] + 7)
+tile_724 = add_tile(1135, 170, filtered_hat_polygons, up_shift=tile_723.bounds[3] + INTERTILE_GAP)
 inner_tile_724 = add_inner_tile(tile_724)
 
-tile_725 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_724.bounds[3] + 7)
+tile_725 = add_tile(908, 170, filtered_hat_polygons, up_shift=tile_724.bounds[3] + INTERTILE_GAP)
 inner_tile_725 = add_inner_tile(tile_725)
 
-tile_726 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_725.bounds[3] + 7)
+tile_726 = add_tile(908, 170, filtered_hat_polygons, up_shift=tile_725.bounds[3] + INTERTILE_GAP)
 inner_tile_726 = add_inner_tile(tile_726)
 
-tile_727 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_726.bounds[3] + 7)
+tile_727 = add_tile(908, 170, filtered_hat_polygons, up_shift=tile_726.bounds[3] + INTERTILE_GAP)
 inner_tile_727 = add_inner_tile(tile_727)
 
-tile_728 = add_tile(905, 170, filtered_hat_polygons, up_shift=tile_727.bounds[3] + 7)
+tile_728 = add_tile(908, 170, filtered_hat_polygons, up_shift=tile_727.bounds[3] + INTERTILE_GAP)
 inner_tile_728 = add_inner_tile(tile_728)
 
-tile_729 = add_tile(905, 190, filtered_hat_polygons, up_shift=tile_728.bounds[3] + 7)
+tile_729 = add_tile(908, 187, filtered_hat_polygons, up_shift=tile_728.bounds[3] + INTERTILE_GAP)
 inner_tile_729 = add_inner_tile(tile_729, endtile=True)
 
 tiles_and_frames = filtered_hat_polygons
@@ -517,7 +519,7 @@ print("before cleanup: ",len(final_export_list))
 # Also check that geometry has .area attribute (Polygon, MultiPolygon have it, but Point/LineString don't)
 final_export_list = [
     p for p in final_export_list 
-    if hasattr(p, 'area') and p.area >= 30
+    if hasattr(p, 'area') and p.area >= 45
 ]
 print(max(crop_hats_721, key=lambda x: x.area).area)
 print("after cleanup: ",len(final_export_list))
